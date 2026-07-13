@@ -1,66 +1,48 @@
-﻿# SILC-TSE: Inference Demo
+﻿# SILC-TSE
 
-## Overview
+## Lightweight Causal Target Speaker Extraction via Staged Condition Injection and Learnable Frequency Compression
 
-SILC-TSE is a lightweight causal target speaker extraction model. Given a speech mixture waveform and a reference waveform from the target speaker, the model estimates the target-speaker waveform from the mixture.
+This repository provides an inference-only demo for qualitative evaluation of SILC-TSE, a lightweight causal target speaker extraction model.
 
-This repository is an inference-only demo for ONNX inference verification and qualitative listening evaluation. It does not include training code, the complete PyTorch implementation, data preparation scripts, experimental configurations, ablation scripts, or the complete manuscript reproduction pipeline.
+Given a two-speaker speech mixture and a reference utterance from the target speaker, SILC-TSE extracts the speech signal corresponding to the referenced speaker.
+
+This repository is not a full reproduction package. Training code, the original PyTorch implementation, experimental configurations, data preparation scripts, dataset construction scripts, and the full evaluation pipeline are not included.
 
 ## Model Interface
 
+The demo model is provided as an ONNX model and is executed with ONNX Runtime on CPU.
+
 | Item | Description |
 |---|---|
-| `mixture` | Input speech mixture waveform |
-| `reference` | Reference waveform from the target speaker |
-| `estimate` | Output estimate waveform for the target speaker |
+| Mixture input | Two-speaker mixture waveform |
+| Reference input | Reference waveform from the target speaker |
+| Output | Estimated waveform of the target speaker |
 | Sampling rate | 8 kHz |
 | Duration | 4 seconds |
-| Samples | 32000 |
+| Samples | 32000 samples |
 | Input shape | `[1, 1, 32000]` |
 | Output shape | `[1, 1, 32000]` |
 | Batch size | 1 |
 | Runtime provider | `CPUExecutionProvider` |
 
-Stereo input is converted to mono. Audio is resampled to 8 kHz. Audio shorter than 4 seconds is zero-padded. Audio longer than 4 seconds is deterministically truncated from the beginning.
-
 ## Repository Structure
 
 ```text
-checkpoints/
-  silc_tse_demo.onnx
-examples/
-  showcase_01/
-  showcase_02/
-  showcase_03/
-outputs/
-  .gitkeep
-.gitignore
-inference.py
-requirements.txt
-README.md
+SILC-TSE/
+├── checkpoints/
+│   └── silc_tse_demo.onnx
+├── examples/
+│   ├── showcase_01/
+│   ├── showcase_02/
+│   └── showcase_03/
+├── inference.py
+├── requirements.txt
+└── README.md
 ```
 
 ## Installation
 
-Create a virtual environment:
-
-```bash
-python -m venv .venv
-```
-
-Activate it on Windows:
-
-```bat
-.venv\Scripts\activate
-```
-
-Activate it on Linux/macOS:
-
-```bash
-source .venv/bin/activate
-```
-
-Install the inference dependencies:
+Install the minimal inference dependencies:
 
 ```bash
 pip install -r requirements.txt
@@ -68,99 +50,76 @@ pip install -r requirements.txt
 
 ## Run Inference
 
-Extract speaker 1 from the first showcase example:
+Run the following commands from the repository root.
+
+Extract speaker 1 using `reference_s1.wav`:
 
 ```bash
-python inference.py \
-  --mixture examples/showcase_01/mixture.wav \
-  --reference examples/showcase_01/reference_s1.wav \
-  --model checkpoints/silc_tse_demo.onnx \
-  --output outputs/showcase_01_s1.wav
+python inference.py --mixture examples/showcase_01/mixture.wav --reference examples/showcase_01/reference_s1.wav --model checkpoints/silc_tse_demo.onnx --output outputs/showcase_01_s1.wav
 ```
 
-Extract speaker 2 from the first showcase example:
+Extract speaker 2 using `reference_s2.wav`:
 
 ```bash
-python inference.py \
-  --mixture examples/showcase_01/mixture.wav \
-  --reference examples/showcase_01/reference_s2.wav \
-  --model checkpoints/silc_tse_demo.onnx \
-  --output outputs/showcase_01_s2.wav
+python inference.py --mixture examples/showcase_01/mixture.wav --reference examples/showcase_01/reference_s2.wav --model checkpoints/silc_tse_demo.onnx --output outputs/showcase_01_s2.wav
 ```
 
-## Demo Audio Examples
+The output directory is created automatically if it does not already exist.
 
-Three curated qualitative examples are provided. Each example contains one mixture, two clean source signals, two target-speaker reference utterances, and two pre-generated SILC-TSE outputs.
+## Demo Audio Files
 
-### Showcase 01
-
-| File | Description |
-|---|---|
-| [mixture.wav](examples/showcase_01/mixture.wav) | Input speech mixture |
-| [clean_s1.wav](examples/showcase_01/clean_s1.wav) | Clean source signal for speaker 1 |
-| [clean_s2.wav](examples/showcase_01/clean_s2.wav) | Clean source signal for speaker 2 |
-| [reference_s1.wav](examples/showcase_01/reference_s1.wav) | Reference utterance for speaker 1 |
-| [reference_s2.wav](examples/showcase_01/reference_s2.wav) | Reference utterance for speaker 2 |
-| [estimate_s1.wav](examples/showcase_01/estimate_s1.wav) | SILC-TSE output using `reference_s1.wav` |
-| [estimate_s2.wav](examples/showcase_01/estimate_s2.wav) | SILC-TSE output using `reference_s2.wav` |
-
-### Showcase 02
+Each showcase directory contains the following files:
 
 | File | Description |
 |---|---|
-| [mixture.wav](examples/showcase_02/mixture.wav) | Input speech mixture |
-| [clean_s1.wav](examples/showcase_02/clean_s1.wav) | Clean source signal for speaker 1 |
-| [clean_s2.wav](examples/showcase_02/clean_s2.wav) | Clean source signal for speaker 2 |
-| [reference_s1.wav](examples/showcase_02/reference_s1.wav) | Reference utterance for speaker 1 |
-| [reference_s2.wav](examples/showcase_02/reference_s2.wav) | Reference utterance for speaker 2 |
-| [estimate_s1.wav](examples/showcase_02/estimate_s1.wav) | SILC-TSE output using `reference_s1.wav` |
-| [estimate_s2.wav](examples/showcase_02/estimate_s2.wav) | SILC-TSE output using `reference_s2.wav` |
+| `mixture.wav` | Input two-speaker mixture |
+| `clean_s1.wav` | Clean source signal for speaker 1 |
+| `clean_s2.wav` | Clean source signal for speaker 2 |
+| `reference_s1.wav` | Reference utterance from speaker 1 |
+| `reference_s2.wav` | Reference utterance from speaker 2 |
+| `estimate_s1.wav` | SILC-TSE output using `reference_s1.wav` |
+| `estimate_s2.wav` | SILC-TSE output using `reference_s2.wav` |
 
-### Showcase 03
+## Demo Examples
 
-| File | Description |
+| Example | Files |
 |---|---|
-| [mixture.wav](examples/showcase_03/mixture.wav) | Input speech mixture |
-| [clean_s1.wav](examples/showcase_03/clean_s1.wav) | Clean source signal for speaker 1 |
-| [clean_s2.wav](examples/showcase_03/clean_s2.wav) | Clean source signal for speaker 2 |
-| [reference_s1.wav](examples/showcase_03/reference_s1.wav) | Reference utterance for speaker 1 |
-| [reference_s2.wav](examples/showcase_03/reference_s2.wav) | Reference utterance for speaker 2 |
-| [estimate_s1.wav](examples/showcase_03/estimate_s1.wav) | SILC-TSE output using `reference_s1.wav` |
-| [estimate_s2.wav](examples/showcase_03/estimate_s2.wav) | SILC-TSE output using `reference_s2.wav` |
+| Showcase 01 | [Open showcase_01](examples/showcase_01/) |
+| Showcase 02 | [Open showcase_02](examples/showcase_02/) |
+| Showcase 03 | [Open showcase_03](examples/showcase_03/) |
 
-## ONNX Validation
+The three examples are curated for qualitative listening and are not intended to replace the quantitative evaluation reported in the paper.
 
-The ONNX model was compared with the original PyTorch implementation on 100 real test samples.
+## Datasets
 
-Maximum task-level differences:
+Target speaker extraction does not have a single universally adopted ready-made public dataset. In the accompanying study, WSJ0-2mix and AISHELL-2mix were constructed from public speech corpora for model evaluation. Each TSE sample consists of a mixture speech signal, a target speech signal, and a reference speech signal. The reference and target speech signals belong to the same speaker but are different utterances.
 
-| Metric | Maximum difference |
-|---|---:|
-| SI-SNR | 0.00644 dB |
-| PESQ | 0.000260 |
-| STOI | 0.000139 |
+### WSJ0-2mix
 
-These differences are negligible for inference verification and qualitative listening evaluation. The validation is intended to support inference verification and qualitative listening evaluation, not to claim exact equality with the original PyTorch implementation.
+WSJ0-2mix is one of the commonly used datasets for target speaker extraction. The speech signals are derived from the WSJ0 corpus, which contains English speech recordings from Wall Street Journal text. The original recordings are single-channel audio with a sampling rate of 16 kHz.
 
-## Scope and Limitations
+For training and validation, utterances are taken from the `si_tr_s` subset, which contains 101 speakers, including 50 male speakers and 51 female speakers, with 12,776 utterances in total. For testing, utterances are taken from the `si_dt_05` and `si_et_05` subsets, which contain 18 speakers unseen during training, including 10 male speakers and 8 female speakers, with 1,857 utterances in total.
 
-- This demo supports fixed 4-second input only.
-- Batch size is fixed to 1.
-- Arbitrary-length input is unsupported.
-- Streaming state input is not provided.
-- Training and fine-tuning are unsupported.
-- Complete manuscript experiments cannot be reproduced from this repository.
-- Minor numerical differences may occur across ONNX Runtime versions and hardware.
+Each WSJ0-2mix mixture is generated from two different speakers. One utterance is randomly selected for each speaker, downsampled to 8 kHz, and normalized to unit power. The amplitude of one utterance is then adjusted so that the relative energy between the two utterances falls within -5 dB to 5 dB. Because the two utterances may have different durations, the mixture length is determined by the shorter utterance. The two processed utterances are then summed to form the mixture.
 
-## Demo Audio Notice
+The constructed WSJ0-2mix set contains 20,000 training mixtures, 5,000 validation mixtures, and 3,000 test mixtures. To form TSE samples, each mixture is used twice by alternately treating each speaker as the target speaker. The reference speech for a target speaker is selected from another utterance of the same speaker.
 
-The three audio examples are curated qualitative examples. They are not random or unbiased test samples, and they do not replace the quantitative results reported in the manuscript.
+### AISHELL-2mix
 
-The examples are WSJ0/WSJ0-2mix-derived limited excerpts included solely for non-commercial research demonstration during anonymous peer review. The original speech corpus remains subject to the terms of its original dataset license. This repository does not grant additional rights to reuse or redistribute the original dataset content.
+AISHELL-2mix is constructed from the AISHELL Mandarin speech corpus. AISHELL contains recordings from 400 speakers from different accent regions in China. The original corpus is divided into training, validation, and test subsets containing 340, 40, and 20 speakers, respectively.
 
-The full WSJ0 and WSJ0-2mix datasets, dataset partitions, file lists, and data preparation scripts are not included.
+Before mixture generation, AISHELL utterances shorter than 2 seconds are discarded. The mixture construction procedure follows the WSJ0-2mix setup, except that the relative energy range is expanded to -6 dB to 6 dB.
 
-## Anonymous Review
+The constructed AISHELL-2mix set contains 100,000 training mixtures, 5,000 validation mixtures, and 8,000 test mixtures.
 
-Author names, affiliations, contact information, and other identifying details are intentionally omitted. This anonymous review demo does not contain author identity information.
+## Demo Data
 
+The audio examples included in this repository are three short, curated qualitative examples derived from the WSJ0-2mix test set. They are provided only for qualitative listening with the inference demo.
+
+The full WSJ0, WSJ0-2mix, AISHELL, and AISHELL-2mix datasets are not included. Dataset partitions, source file lists, data preparation scripts, mixture generation scripts, and full evaluation scripts are also not included.
+
+The original speech data remain subject to the terms of their respective dataset licenses.
+
+## Repository Scope
+
+This repository is intended only for SILC-TSE inference and qualitative listening evaluation. It contains the ONNX inference model, a minimal CPU inference script, and three curated demo examples. Model architecture details, training settings, dataset construction details, and quantitative experimental results are described in the accompanying paper.
