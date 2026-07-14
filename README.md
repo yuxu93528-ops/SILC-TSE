@@ -1,10 +1,10 @@
-# SILC-TSE
+# SCI-LFC
 
 ## Lightweight Causal Target Speaker Extraction via Staged Condition Injection and Learnable Frequency Compression
 
-This repository provides an inference-only demo for qualitative evaluation of SILC-TSE, a lightweight causal target speaker extraction model.
+This repository provides an inference demo for **SCI-LFC**, a lightweight causal target speaker extraction model based on staged condition injection and learnable frequency compression.
 
-Given a two-speaker speech mixture and a reference utterance from the target speaker, SILC-TSE extracts the speech signal corresponding to the referenced speaker.
+Given a two-speaker speech mixture and a reference utterance from the target speaker, SCI-LFC extracts the speech signal corresponding to the referenced speaker.
 
 This repository is not a full reproduction package. Training code, the original PyTorch implementation, experimental configurations, data preparation scripts, dataset construction scripts, and the full evaluation pipeline are not included.
 
@@ -28,16 +28,16 @@ The demo model is provided as an ONNX model and is executed with ONNX Runtime on
 ## Repository Structure
 
 ```text
-SILC-TSE/
-├── checkpoints/
-│   └── silc_tse_demo.onnx
-├── examples/
-│   ├── showcase_01/
-│   ├── showcase_02/
-│   └── showcase_03/
-├── inference.py
-├── requirements.txt
-└── README.md
+SCI-LFC/
+|-- checkpoints/
+|   `-- sci_lfc_demo.onnx
+|-- examples/
+|   |-- showcase_01/
+|   |-- showcase_02/
+|   `-- showcase_03/
+|-- inference.py
+|-- requirements.txt
+`-- README.md
 ```
 
 ## Installation
@@ -55,13 +55,13 @@ Run the following commands from the repository root.
 Extract speaker 1 using `reference_s1.wav`:
 
 ```bash
-python inference.py --mixture examples/showcase_01/mixture.wav --reference examples/showcase_01/reference_s1.wav --model checkpoints/silc_tse_demo.onnx --output outputs/showcase_01_s1.wav
+python inference.py --mixture examples/showcase_01/mixture.wav --reference examples/showcase_01/reference_s1.wav --model checkpoints/sci_lfc_demo.onnx --output outputs/showcase_01_s1.wav
 ```
 
 Extract speaker 2 using `reference_s2.wav`:
 
 ```bash
-python inference.py --mixture examples/showcase_01/mixture.wav --reference examples/showcase_01/reference_s2.wav --model checkpoints/silc_tse_demo.onnx --output outputs/showcase_01_s2.wav
+python inference.py --mixture examples/showcase_01/mixture.wav --reference examples/showcase_01/reference_s2.wav --model checkpoints/sci_lfc_demo.onnx --output outputs/showcase_01_s2.wav
 ```
 
 The output directory is created automatically if it does not already exist.
@@ -79,8 +79,8 @@ Each showcase directory contains the following files:
 | `clean_s2.wav` | Clean source signal for speaker 2 |
 | `reference_s1.wav` | Reference utterance from speaker 1 |
 | `reference_s2.wav` | Reference utterance from speaker 2 |
-| `estimate_s1.wav` | SILC-TSE output using `reference_s1.wav` |
-| `estimate_s2.wav` | SILC-TSE output using `reference_s2.wav` |
+| `estimate_s1.wav` | SCI-LFC output using `reference_s1.wav` |
+| `estimate_s2.wav` | SCI-LFC output using `reference_s2.wav` |
 
 ## Demo Examples
 
@@ -128,4 +128,6 @@ The original speech data remain subject to the terms of their respective dataset
 
 ## Repository Scope
 
-This repository is intended only for SILC-TSE inference and qualitative listening evaluation. It contains the ONNX inference model, a minimal CPU inference script, and three curated demo examples. Model architecture details, training settings, dataset construction details, and quantitative experimental results are described in the accompanying paper.
+This repository is intended only for SCI-LFC inference and qualitative listening evaluation. It contains the ONNX inference model, a minimal CPU inference script, and three curated demo examples. Model architecture details, training settings, dataset construction details, and quantitative experimental results are described in the accompanying paper.
+
+

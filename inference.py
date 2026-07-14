@@ -1,4 +1,4 @@
-import argparse
+﻿import argparse
 import math
 import time
 from pathlib import Path
@@ -161,10 +161,10 @@ def run(args):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Run SILC-TSE ONNX inference.")
+    parser = argparse.ArgumentParser(description="Run SCI-LFC ONNX inference.")
     parser.add_argument("--mixture", required=True, help="Path to the mixture WAV file.")
     parser.add_argument("--reference", required=True, help="Path to the target-speaker reference WAV file.")
-    parser.add_argument("--model", required=True, help="Path to the SILC-TSE ONNX model.")
+    parser.add_argument("--model", required=True, help="Path to the SCI-LFC ONNX model.")
     parser.add_argument("--output", required=True, help="Path for the output WAV file.")
     args = parser.parse_args()
     try:
@@ -175,3 +175,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
