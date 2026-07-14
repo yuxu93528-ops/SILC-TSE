@@ -94,27 +94,29 @@ The three examples are curated for qualitative listening and are not intended to
 
 ## Datasets
 
-For model evaluation, two target speaker extraction datasets were constructed from the WSJ0 and AISHELL-1 speech corpora.
+For model evaluation, two target speaker extraction datasets were constructed
+from the WSJ0 and AISHELL-1 speech corpora. Each TSE sample consists of a
+two-speaker mixture, a clean target signal, and a reference utterance spoken
+by the same target speaker.
 
-Each sample consists of a two-speaker mixture, a clean target utterance, and a reference utterance from the same target speaker. The target and reference signals are different utterances spoken by the same speaker.
+The source utterances were converted to 8 kHz and mixed at randomly selected
+relative energy levels. Each mixture was used twice by alternately treating
+the two speakers as the extraction target.
 
-### WSJ0-2mix
+| Dataset | Training | Validation | Test | Relative energy range |
+|---|---:|---:|---:|---:|
+| WSJ0-2mix | 20,000 | 5,000 | 3,000 | -5 dB to 5 dB |
+| AISHELL-2mix | 100,000 | 5,000 | 8,000 | -6 dB to 6 dB |
 
-WSJ0-2mix is one of the commonly used datasets for target speaker extraction. The speech signals are derived from the WSJ0 corpus, which contains English speech recordings from Wall Street Journal text. The original recordings are single-channel audio with a sampling rate of 16 kHz.
+WSJ0-2mix was constructed from English utterances in WSJ0, while
+AISHELL-2mix was constructed from Mandarin utterances in AISHELL-1.
+Utterances shorter than 2 seconds were excluded when constructing
+AISHELL-2mix.
 
-For training and validation, utterances are taken from the `si_tr_s` subset, which contains 101 speakers, including 50 male speakers and 51 female speakers, with 12,776 utterances in total. For testing, utterances are taken from the `si_dt_05` and `si_et_05` subsets, which contain 18 speakers unseen during training, including 10 male speakers and 8 female speakers, with 1,857 utterances in total.
-
-Each WSJ0-2mix mixture is generated from two different speakers. One utterance is randomly selected for each speaker, downsampled to 8 kHz, and normalized to unit power. The amplitude of one utterance is then adjusted so that the relative energy between the two utterances falls within -5 dB to 5 dB. Because the two utterances may have different durations, the mixture length is determined by the shorter utterance. The two processed utterances are then summed to form the mixture.
-
-The constructed WSJ0-2mix set contains 20,000 training mixtures, 5,000 validation mixtures, and 3,000 test mixtures. To form TSE samples, each mixture is used twice by alternately treating each speaker as the target speaker. The reference speech for a target speaker is selected from another utterance of the same speaker.
-
-### AISHELL-2mix
-
-AISHELL-2mix was constructed from the AISHELL-1 Mandarin speech corpus. AISHELL-1 contains recordings from 400 speakers from different accent regions in China. The original corpus is divided into training, validation, and test subsets containing 340, 40, and 20 speakers, respectively.
-
-Before mixture generation, AISHELL-1 utterances shorter than 2 seconds are discarded. The mixture construction procedure follows the WSJ0-2mix setup, except that the relative energy range is expanded to -6 dB to 6 dB.
-
-The constructed AISHELL-2mix set contains 100,000 training mixtures, 5,000 validation mixtures, and 8,000 test mixtures.
+The three qualitative examples provided in this repository were selected from
+the WSJ0-2mix test set. Full dataset partitions, construction scripts, and
+evaluation files are not included. Further construction details are provided
+in the accompanying paper.
 
 ## Demo Data
 
